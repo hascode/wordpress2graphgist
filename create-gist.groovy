@@ -62,8 +62,6 @@ def parseArticle = { url ->
     def tags = getTags(page)
     
     articles.add(new Article(url:url, title:title, tags:tags))
-    writeCypher()
-    throw new IllegalArgumentException()
 }
 def memoParseArticle = parseArticle.memoize()
 
@@ -76,6 +74,7 @@ def run = {
     }.findAll{it =~ articlePattern}.each {
         memoParseArticle(it)
     }
+    writeCypher()
 }
 
 println("// import started: ${new Date()}")
