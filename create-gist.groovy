@@ -9,6 +9,10 @@ class Article {
     String url
     String title
     List<String> tags = []
+    
+    def printTags = {
+        tags.collect{"'$it'"}.join(', ')
+    }
 }
 
 def articles = []
@@ -41,6 +45,12 @@ def getTags = { page ->
  **/
 def writeCypher = {
     println("// creating cypher queries for ${articles.size()} articles")
+    articles.eachWithIndex { article, idx ->
+        println "CREATE (p$idx:ARTICLE{title:'${article.title}', url:'${article.url}' ,tags:[${article.printTags()}]})"
+        article.tags.each { tag ->
+            println("CREATE (p$idx)-[:HAS_TAG]->(:TAG{title:'$tag'}")
+        }
+    }
 }
 
 /**
