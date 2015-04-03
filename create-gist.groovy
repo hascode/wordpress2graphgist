@@ -40,15 +40,24 @@ def getTags = { page ->
     }.collect {it.text().toLowerCase()}.sort()
 }
 
+def tag2Key = {
+    "tag_"+it.replaceAll(' ','_').replaceAll('-','_').replaceAll(/\./,'_')
+}
+
 /**
  * writes the cypher scripts.
  **/
 def writeCypher = {
     println("// creating cypher queries for ${articles.size()} articles")
+    println("// creating tags")
+    articles.collect{it.tags}.flatten().unique().each { tag ->
+        println("CREATE (${tag2Key(tag)}:TAG{title:'$tag'})")
+    }
+    println("// creating article nodes and relations")
     articles.eachWithIndex { article, idx ->
         println "CREATE (p$idx:ARTICLE{title:'${article.title}', url:'${article.url}' ,tags:[${article.printTags()}]})"
         article.tags.each { tag ->
-            println("CREATE (p$idx)-[:HAS_TAG]->(:TAG{title:'$tag'})")
+            println("CREATE (p$idx)-[:HAS_TAG]->(${tag2Key(tag)})")
         }
     }
 }
