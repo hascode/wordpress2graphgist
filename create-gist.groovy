@@ -48,7 +48,7 @@ def writeCypher = {
     articles.eachWithIndex { article, idx ->
         println "CREATE (p$idx:ARTICLE{title:'${article.title}', url:'${article.url}' ,tags:[${article.printTags()}]})"
         article.tags.each { tag ->
-            println("CREATE (p$idx)-[:HAS_TAG]->(:TAG{title:'$tag'}")
+            println("CREATE (p$idx)-[:HAS_TAG]->(:TAG{title:'$tag'})")
         }
     }
 }
